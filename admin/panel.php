@@ -64,7 +64,7 @@ $modulo = $_REQUEST['modulo'] ?? '';
 
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
-          <a class="nav-link" href="editarPerfil.php">
+          <a class="nav-link" href="panel.php?modulo=editarUsuario">
             <i class="far fa-user"></i>
           </a>
         </li>
@@ -128,7 +128,7 @@ $modulo = $_REQUEST['modulo'] ?? '';
                 </li>
                 <li class="nav-item">
                   <a href="panel.php?modulo=usuarios"
-                    class="nav-link <?php echo ($modulo == "usuarios" || $modulo == "crearUsuario") ? " active" : ""; ?>">
+                    class="nav-link <?php echo ($modulo == "usuarios" || $modulo == "crearUsuario" || $modulo == "editarUsuario") ? " active" : ""; ?>">
                     <i class="far fa-user nav-icon"></i>
                     <p>Usuarios</p>
                   </a>
@@ -150,6 +150,7 @@ $modulo = $_REQUEST['modulo'] ?? '';
               </ul>
             </li>
         </nav>
+        
         <!-- /.sidebar-menu -->
       </div>
       <!-- /.sidebar -->
@@ -182,6 +183,9 @@ $modulo = $_REQUEST['modulo'] ?? '';
     }
     if ($modulo == "crearUsuario") {
       include_once "crearUsuario.php";
+    }
+    if($modulo == "editarUsuario"){
+      include_once "editarUsuario.php";
     }
     ?>
 
