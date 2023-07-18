@@ -2,6 +2,10 @@
 <html lang="en">
 <?php
 session_start();
+if(isset($_REQUEST['sesion'])&&$_REQUEST['sesion']=="cerrar"){
+  session_destroy();
+  header("location: index.php");
+}
 if (isset($_SESSION['id']) == false) {
   header("location: index.php");
 }
@@ -64,9 +68,16 @@ $modulo = $_REQUEST['modulo'] ?? '';
 
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
-          <a class="nav-link" href="panel.php?modulo=editarUsuario">
+          <a class="nav-link" href="panel.php?modulo=editarUsuario&id=<?php echo $_SESSION['id'];?>">
             <i class="far fa-user"></i>
           </a>
+          
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="panel.php?modulo=&sesion=cerrar">
+            <i class="fas fa-door-closed"></i>
+          </a>
+          
         </li>
       </ul>
     </nav>
@@ -256,6 +267,20 @@ $modulo = $_REQUEST['modulo'] ?? '';
         });
       });
     </script>
+
+
+<script>
+  $(documen).ready(function(){
+    $(".borrar").click(function(e){
+      e.preventDefault();
+      var res=confirm("¿Deseas borrar el usuario?");
+      if(res==true){
+        var link=$(this).attr("href");
+        window.location=link;
+      }
+    })
+  });
+</script>
 </body>
 
 </html>

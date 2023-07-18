@@ -1,3 +1,27 @@
+<?php
+include_once "db_tienda.php";
+$con = mysqli_connect($host, $user, $pass, $db);
+if (isset($_REQUEST['idBorrar'])) {
+    $id = mysqli_real_escape_string($con, $_REQUEST['idBorrar'] ?? '');
+    $query = "DELETE FROM usuarios where id='" . $id . "';";
+    $res = mysqli_query($con, $query);
+    if ($res) {
+        ?>
+        <div class="alert alert-warning float-right" role="alert">
+        Usuario borrado correctamente
+        </div>
+        <?php
+    }else{
+        ?>
+        <div class="alert alert-danger float-right" role="alert">
+        Error al borrar el usuario <?php echo mysqli_error($con)?>
+        </div>
+        <?php 
+    }
+
+}
+?>
+
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -26,32 +50,38 @@
                                         <th>Nombre</th>
                                         <th>Email</th>
                                         <th>Acciones
-                                            <a href="panel.php?modulo=crearUsuario"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                            <a href="panel.php?modulo=crearUsuario"><i class="fa fa-plus"
+                                                    aria-hidden="true"></i></a>
                                         </th>
 
                                     </tr>
                                 </thead>
                                 <tbody>
 
-                                <?php
-                                include_once "db_tienda.php";
-                                $con=mysqli_connect($host,$user,$pass,$db);
-                                $query="SELECT id,email,nombre FROM usuarios;";
-                                $res=mysqli_query($con,$query);
-                                $row=mysqli_fetch_assoc($res);
-                                while($row = mysqli_fetch_assoc($res)){
-                                ?>
-                                    <tr>
-                                        <td><?php echo $row['nombre']?></td>
-                                        <td><?php echo $row['email']?></td>
-                                        <td>
-                                            <a href="panel.php?modulo=editarUsuario&id=<?php echo $row['id']?>" style="margin-right: 5px;"> <i class="fas fa-edit    "></i></a>
-                                            <a href="usuarios.php?idBorrar=<?php echo $row['id']?>" class="text-danger"> <i class="fas fa-trash    "></i></a>
-                                        </td>
-
-                                    </tr>
                                     <?php
-                                }
+
+                                    $query = "SELECT id,email,nombre FROM usuarios;";
+                                    $res = mysqli_query($con, $query);
+                                    $row = mysqli_fetch_assoc($res);
+                                    while ($row = mysqli_fetch_assoc($res)) {
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <?php echo $row['nombre'] ?>
+                                            </td>
+                                            <td>
+                                                <?php echo $row['email'] ?>
+                                            </td>
+                                            <td>
+                                                <a href="panel.php?modulo=editarUsuario&id=<?php echo $row['id'] ?>"
+                                                    style="margin-right: 5px;"> <i class="fas fa-edit    "></i></a>
+                                                <a href="panel.php?modulo=usuarios&idBorrar=<?php echo $row['id'] ?>"
+                                                    class="text-danger borrar"> <i class="fas fa-trash    "></i></a>
+                                            </td>
+
+                                        </tr>
+                                        <?php
+                                    }
                                     ?>
                                 </tbody>
                             </table>
