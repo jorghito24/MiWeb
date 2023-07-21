@@ -2,7 +2,7 @@
 <html lang="en">
 <?php
 session_start();
-if(isset($_REQUEST['sesion'])&&$_REQUEST['sesion']=="cerrar"){
+if (isset($_REQUEST['sesion']) && $_REQUEST['sesion'] == "cerrar") {
   session_destroy();
   header("location: index.php");
 }
@@ -40,9 +40,13 @@ $modulo = $_REQUEST['modulo'] ?? '';
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
 
   <!-- DataTables -->
-  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <!--<link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">-->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+  <link rel="stylesheet" href="css/editor.dataTables.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -68,16 +72,16 @@ $modulo = $_REQUEST['modulo'] ?? '';
 
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
-          <a class="nav-link" href="panel.php?modulo=editarUsuario&id=<?php echo $_SESSION['id'];?>">
+          <a class="nav-link" href="panel.php?modulo=editarUsuario&id=<?php echo $_SESSION['id']; ?>">
             <i class="far fa-user"></i>
           </a>
-          
+
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link" href="panel.php?modulo=&sesion=cerrar">
             <i class="fas fa-door-closed"></i>
           </a>
-          
+
         </li>
       </ul>
     </nav>
@@ -161,11 +165,11 @@ $modulo = $_REQUEST['modulo'] ?? '';
               </ul>
             </li>
         </nav>
-        
+
         <!-- /.sidebar-menu -->
       </div>
       <!-- /.sidebar -->
-      
+
     </aside>
     <?php
     if (isset($_REQUEST['mensaje'])) {
@@ -195,8 +199,11 @@ $modulo = $_REQUEST['modulo'] ?? '';
     if ($modulo == "crearUsuario") {
       include_once "crearUsuario.php";
     }
-    if($modulo == "editarUsuario"){
+    if ($modulo == "editarUsuario") {
       include_once "editarUsuario.php";
+    }
+    if ($modulo == "productos") {
+      include_once "productos.php";
     }
     ?>
 
@@ -237,7 +244,7 @@ $modulo = $_REQUEST['modulo'] ?? '';
     <script src="dist/js/pages/dashboard.js"></script>
 
     <!-- DataTables  & Plugins -->
-    <script src="plugins/datatables/jquery.dataTables.min.js"></script>
+    <!--<script src="plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
@@ -248,7 +255,11 @@ $modulo = $_REQUEST['modulo'] ?? '';
     <script src="plugins/pdfmake/vfs_fonts.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>-->
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script src="js/dataTables.editor.min.js"></script>
 
     <script>
       $(function () {
@@ -265,22 +276,54 @@ $modulo = $_REQUEST['modulo'] ?? '';
           "autoWidth": false,
           "responsive": true,
         });
+        editor = new $.fn.dataTable.Editor({
+          ajax: "controllers/productos.php",
+          table: "#tablaProductos",
+          fields: [{
+            label: "Nombre:",
+            name: "nombre"
+          }, {
+            label: "Precio:",
+            name: "precio"
+          }, {
+            label: "Existencia:",
+            name: "existencia"
+          }
+          ]
+        });
+
+        $('#tablaProductos').DataTable({
+          dom: "Bfrtip",
+          ajax: "controllers/productos.php",
+          columns: [
+            { data: "nombre" },
+            { data: "precio", render: $.fn.dataTable.render.number(',', '.', 0, '$') },
+            { data: "existencia" },
+
+          ],
+          select: true,
+          buttons: [
+            { extend: "create", editor: editor },
+            { extend: "edit", editor: editor },
+            { extend: "remove", editor: editor }
+          ]
+        });
       });
     </script>
 
 
-<script>
-  $(documen).ready(function(){
-    $(".borrar").click(function(e){
-      e.preventDefault();
-      var res=confirm("¿Deseas borrar el usuario?");
-      if(res==true){
-        var link=$(this).attr("href");
-        window.location=link;
-      }
-    })
-  });
-</script>
+    <script>
+      $(documen).ready(function () {
+        $(".borrar").click(function (e) {
+          e.preventDefault();
+          var res = confirm("¿Deseas borrar el usuario?");
+          if (res == true) {
+            var link = $(this).attr("href");
+            window.location = link;
+          }
+        })
+      });
+    </script>
 </body>
 
 </html>
